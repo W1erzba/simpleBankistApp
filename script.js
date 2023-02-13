@@ -34,6 +34,8 @@ const account4 = {
 };
 
 const accounts = [account1, account2, account3, account4];
+const euroToUsd = 1.1;
+const usdToeuro = 0.9;
 
 // Elements
 const labelWelcome = document.querySelector('.welcome');
@@ -62,6 +64,7 @@ const inputCloseUsername = document.querySelector('.form__input--user');
 const inputClosePin = document.querySelector('.form__input--pin');
 
 const displayMovements = function (movements) {
+  containerMovements.innerHTML = '';
   movements.forEach((mov, i) => {
     const type = mov > 0 ? 'deposit' : 'withdrawal';
     const html = `
@@ -75,11 +78,43 @@ const displayMovements = function (movements) {
     containerMovements.insertAdjacentHTML('afterbegin', html);
   });
 };
-
 displayMovements(account1.movements);
+
+const calcDisplayBalance = acc => {
+  const balance = acc.movements.reduce((mov, acu) => mov + acu);
+  return (labelBalance.textContent = balance + '$');
+};
+calcDisplayBalance(account1);
+
+const calcDisplayDepositsBalance = acc => {
+  const deposits = acc.movements
+    .filter(mov => mov > 0)
+    .map(mov => mov * usdToeuro)
+    .reduce((mov, acc) => mov + acc);
+  return (labelSumIn.textContent = deposits + '€');
+};
+calcDisplayDepositsBalance(account1);
+
+const calcDisplayWithdrawalBalance = acc => {
+  const withdrawals = acc.movements
+    .filter(mov => mov < 0)
+    .map(mov => mov * usdToeuro)
+    .reduce((mov, acc) => mov + acc);
+  return (labelSumOut.textContent = Math.abs(withdrawals) + '€');
+};
+calcDisplayWithdrawalBalance(account1);
+
+// FIXME: const calcDisplayInterest = acc => {
+//   const interest = acc
+//     .filter(mov => mov.movements > 0)
+//     .map(mov => mov.movements * mov.interestRate)
+//     .reduce((mov, acc) => mov + acc);
+//   return (labelSumInterest.textContent = interest + '€');
+// };
+// calcDisplayInterest(account1);
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
-// LECTURES
+// Notes and test Area
 
 const currencies = new Map([
   ['USD', 'United States dollar'],
@@ -88,5 +123,24 @@ const currencies = new Map([
 ]);
 
 const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
+
+const movementsUsd = movements.map(
+  mov => Math.floor(mov * euroToUsd * 100) / 100
+);
+
+const createUserLogin = array => {
+  array.forEach(acc => {
+    acc.userName = acc.owner
+      .toLowerCase()
+      .split(' ')
+      .map(word => word.charAt(0))
+      .join('');
+  });
+};
+
+createUserLogin(accounts);
+
+const deposits = movements.filter(mov => mov > 0);
+const withdrawals = movements.filter(mov => mov < 0);
 
 /////////////////////////////////////////////////
