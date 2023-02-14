@@ -87,31 +87,25 @@ const calcDisplayBalance = acc => {
 calcDisplayBalance(account1);
 
 const calcDisplayDepositsBalance = acc => {
-  const deposits = acc.movements
+  const incomes = acc.movements
     .filter(mov => mov > 0)
     .map(mov => mov * usdToeuro)
     .reduce((mov, acc) => mov + acc);
-  return (labelSumIn.textContent = deposits + '€');
-};
-calcDisplayDepositsBalance(account1);
+  labelSumIn.textContent = incomes + '€';
 
-const calcDisplayWithdrawalBalance = acc => {
-  const withdrawals = acc.movements
+  const outcomes = acc.movements
     .filter(mov => mov < 0)
     .map(mov => mov * usdToeuro)
     .reduce((mov, acc) => mov + acc);
-  return (labelSumOut.textContent = Math.abs(withdrawals) + '€');
-};
-calcDisplayWithdrawalBalance(account1);
+  labelSumOut.textContent = Math.abs(outcomes) + '€';
 
-// FIXME: const calcDisplayInterest = acc => {
-//   const interest = acc
-//     .filter(mov => mov.movements > 0)
-//     .map(mov => mov.movements * mov.interestRate)
-//     .reduce((mov, acc) => mov + acc);
-//   return (labelSumInterest.textContent = interest + '€');
-// };
-// calcDisplayInterest(account1);
+  const interest = acc.movements
+    .filter(mov => mov > 0)
+    .map(mov => (mov * acc.interestRate) / 100)
+    .reduce((mov, acc) => mov + acc);
+  labelSumInterest.textContent = interest + '€';
+};
+calcDisplayDepositsBalance(account1);
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
 // Notes and test Area
