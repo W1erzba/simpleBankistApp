@@ -124,18 +124,23 @@ btnLogin.addEventListener('click', e => {
   currentAccount = accounts.find(
     acc => acc.userName === inputLoginUsername.value
   );
-  if (currentAccount.pin === inputLoginPin.value)
+  if (currentAccount.pin === Number(inputLoginPin.value)) {
     // Display UI and message
     labelWelcome.textContent = `Welcome back, ${
-      currentAccount.owner.split('')[0]
+      currentAccount.owner.split(' ')[0]
     }.`;
-  containerApp.style.opacity = 100;
+    containerApp.style.opacity = 100;
+  }
   // Display movements
   displayMovements(currentAccount);
   // Display balance
   calcDisplayBalance(currentAccount);
   // Display summary
   calcDisplaySummary(currentAccount);
+  // Clear input fields
+  inputLoginPin.value = inputLoginUsername.value = '';
+  // Losing focus of input field
+  inputLoginPin.blur();
 });
 
 /////////////////////////////////////////////////
