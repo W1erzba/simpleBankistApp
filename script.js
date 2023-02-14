@@ -96,6 +96,7 @@ const calcDisplayBalance = acc => {
   return (labelBalance.textContent = balance + '$');
 };
 
+const calcDisplaySummary = acc => {
   const incomes = acc.movements
     .filter(mov => mov > 0)
     .map(mov => mov * usdToeuro)
@@ -114,7 +115,6 @@ const calcDisplayBalance = acc => {
     .reduce((mov, acc) => mov + acc);
   labelSumInterest.textContent = interest + '€';
 };
-
 
 // Event handlers
 let currentAccount;
