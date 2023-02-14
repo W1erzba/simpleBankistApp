@@ -37,6 +37,18 @@ const accounts = [account1, account2, account3, account4];
 const euroToUsd = 1.1;
 const usdToeuro = 0.9;
 
+const createUserLogin = array => {
+  array.forEach(acc => {
+    acc.userName = acc.owner
+      .toLowerCase()
+      .split(' ')
+      .map(word => word.charAt(0))
+      .join('');
+  });
+};
+
+createUserLogin(accounts);
+
 // Elements
 const labelWelcome = document.querySelector('.welcome');
 const labelDate = document.querySelector('.date');
@@ -63,9 +75,9 @@ const inputLoanAmount = document.querySelector('.form__input--loan-amount');
 const inputCloseUsername = document.querySelector('.form__input--user');
 const inputClosePin = document.querySelector('.form__input--pin');
 
-const displayMovements = function (movements) {
+const displayMovements = acc => {
   containerMovements.innerHTML = '';
-  movements.forEach((mov, i) => {
+  acc.movements.forEach((mov, i) => {
     const type = mov > 0 ? 'deposit' : 'withdrawal';
     const html = `
    <div class="movements__row">
@@ -78,15 +90,13 @@ const displayMovements = function (movements) {
     containerMovements.insertAdjacentHTML('afterbegin', html);
   });
 };
-displayMovements(account1.movements);
 
 const calcDisplayBalance = acc => {
   const balance = acc.movements.reduce((mov, acu) => mov + acu);
   return (labelBalance.textContent = balance + '$');
 };
-calcDisplayBalance(account1);
 
-const calcDisplayDepositsBalance = acc => {
+const calcDisplaySummary = acc => {
   const incomes = acc.movements
     .filter(mov => mov > 0)
     .map(mov => mov * usdToeuro)
@@ -105,7 +115,29 @@ const calcDisplayDepositsBalance = acc => {
     .reduce((mov, acc) => mov + acc);
   labelSumInterest.textContent = interest + '€';
 };
-calcDisplayDepositsBalance(account1);
+
+// Event handlers
+let currentAccount;
+
+btnLogin.addEventListener('click', e => {
+  e.preventDefault();
+  currentAccount = accounts.find(
+    acc => acc.userName === inputLoginUsername.value
+  );
+  if (currentAccount.pin === inputLoginPin.value)
+    // Display UI and message
+    labelWelcome.textContent = `Welcome back, ${
+      currentAccount.owner.split('')[0]
+    }.`;
+  containerApp.style.opacity = 100;
+  // Display movements
+  displayMovements(currentAccount);
+  // Display balance
+  calcDisplayBalance(currentAccount);
+  // Display summary
+  calcDisplaySummary(currentAccount);
+});
+
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
 // Notes and test Area
@@ -121,18 +153,6 @@ const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
 const movementsUsd = movements.map(
   mov => Math.floor(mov * euroToUsd * 100) / 100
 );
-
-const createUserLogin = array => {
-  array.forEach(acc => {
-    acc.userName = acc.owner
-      .toLowerCase()
-      .split(' ')
-      .map(word => word.charAt(0))
-      .join('');
-  });
-};
-
-createUserLogin(accounts);
 
 const deposits = movements.filter(mov => mov > 0);
 const withdrawals = movements.filter(mov => mov < 0);
