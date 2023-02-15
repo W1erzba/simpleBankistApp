@@ -37,7 +37,7 @@ const accounts = [account1, account2, account3, account4];
 const euroToUsd = 1.1;
 const usdToeuro = 0.9;
 
-const createUserLogin = array => {
+const createUserNames = array => {
   array.forEach(acc => {
     acc.userName = acc.owner
       .toLowerCase()
@@ -47,7 +47,16 @@ const createUserLogin = array => {
   });
 };
 
-createUserLogin(accounts);
+createUserNames(accounts);
+
+const updateUI = curAcc => {
+  // Display movements
+  displayMovements(curAcc);
+  // Display balance
+  calcDisplayBalance(curAcc);
+  // Display summary
+  calcDisplaySummary(curAcc);
+};
 
 // Elements
 const labelWelcome = document.querySelector('.welcome');
@@ -92,8 +101,8 @@ const displayMovements = acc => {
 };
 
 const calcDisplayBalance = acc => {
-  const balance = acc.movements.reduce((mov, acu) => mov + acu);
-  return (labelBalance.textContent = balance + '$');
+  acc.balance = acc.movements.reduce((mov, acu) => mov + acu, 0);
+  labelBalance.textContent = acc.balance + '$';
 };
 
 const calcDisplaySummary = acc => {
@@ -131,18 +140,36 @@ btnLogin.addEventListener('click', e => {
     }.`;
     containerApp.style.opacity = 100;
   }
-  // Display movements
-  displayMovements(currentAccount);
-  // Display balance
-  calcDisplayBalance(currentAccount);
-  // Display summary
-  calcDisplaySummary(currentAccount);
+
   // Clear input fields
   inputLoginPin.value = inputLoginUsername.value = '';
   // Losing focus of input field
   inputLoginPin.blur();
+
+  updateUI(currentAccount);
 });
 
+btnTransfer.addEventListener('click', e => {
+  e.preventDefault();
+  const amount = Number(inputTransferAmount.value);
+  const reciverAcc = accounts.find(
+    acc => acc.userName === inputTransferTo.value
+  );
+  //Clear the fileds
+  inputTransferAmount.value = inputTransferTo.value = '';
+  if (
+    amount > 0 &&
+    reciverAcc &&
+    currentAccount.balance >= amount &&
+    reciverAcc?.userName !== currentAccount.userName
+  ) {
+    // Doing the transfer
+    currentAccount.movements.push(-amount);
+    reciverAcc.movements.push(amount);
+    // Update UI
+    updateUI(currentAccount);
+  }
+});
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
 // Notes and test Area
