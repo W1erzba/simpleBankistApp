@@ -51,7 +51,7 @@ createUserNames(accounts);
 
 const updateUI = curAcc => {
   // Display movements
-  displayMovements(curAcc);
+  displayMovements(curAcc.movements);
   // Display balance
   calcDisplayBalance(curAcc);
   // Display summary
@@ -84,10 +84,14 @@ const inputLoanAmount = document.querySelector('.form__input--loan-amount');
 const inputCloseUsername = document.querySelector('.form__input--user');
 const inputClosePin = document.querySelector('.form__input--pin');
 
-const displayMovements = acc => {
+const displayMovements = function (movements, sort = false) {
   containerMovements.innerHTML = '';
-  acc.movements.forEach((mov, i) => {
+
+  const movs = sort ? movements.slice().sort((a, b) => a - b) : movements;
+
+  movs.forEach((mov, i) => {
     const type = mov > 0 ? 'deposit' : 'withdrawal';
+
     const html = `
    <div class="movements__row">
           <div class="movements__type movements__type--${type}">${
@@ -202,6 +206,13 @@ btnClose.addEventListener('click', e => {
   // Clear inputs
   inputCloseUsername.value = inputClosePin.value = '';
   console.log(currentAccount);
+});
+
+let sorted = false;
+btnSort.addEventListener('click', e => {
+  e.preventDefault();
+  displayMovements(currentAccount.movements, !sorted);
+  sorted = !sorted;
 });
 
 //////////////////////////////////////////////////////////////////
