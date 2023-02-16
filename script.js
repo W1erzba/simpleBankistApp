@@ -154,8 +154,8 @@ containerApp.style.opacity = 100;
 
 // Date stuff  FIXME:
 const now = new Date();
-const day = `${now.getDate().padStart(2, 0)}`;
-const month = `${(now.getMonth() + 1).padStart(2, 0)}`; // month index starts at 0.
+const day = `${now.getDate()}`.padStart(2, 0);
+const month = `${now.getMonth() + 1}`.padStart(2, 0); // month index starts at 0.
 const year = now.getFullYear();
 const hour = now.getHours();
 const min = now.getMinutes();
