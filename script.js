@@ -6,7 +6,7 @@
 
 // Data
 const account1 = {
-  owner: 'Jonas Schmedtmann',
+  owner: 'Bartosz Wierzbicki',
   movements: [200, 455.23, -306.5, 25000, -642.21, -133.9, 79.97, 1300],
   interestRate: 1.2, // %
   pin: 1111,
@@ -26,7 +26,7 @@ const account1 = {
 };
 
 const account2 = {
-  owner: 'Jessica Davis',
+  owner: 'Magdalena Wierzbicka',
   movements: [5000, 3400, -150, -790, -3210, -1000, 8500, -30],
   interestRate: 1.5,
   pin: 2222,
@@ -150,7 +150,7 @@ btnLogin.addEventListener('click', e => {
   currentAccount = accounts.find(
     acc => acc.userName === inputLoginUsername.value
   );
-  if (currentAccount.pin === Number(inputLoginPin.value)) {
+  if (currentAccount.pin === +inputLoginPin.value) {
     // Display UI and message
     labelWelcome.textContent = `Welcome back, ${
       currentAccount.owner.split(' ')[0]
@@ -169,7 +169,7 @@ btnLogin.addEventListener('click', e => {
 btnLoan.addEventListener('click', e => {
   e.preventDefault();
 
-  const amount = Number(inputLoanAmount.value);
+  const amount = +inputLoanAmount.value;
   if (amount > 0 && currentAccount.movements.some(mov => mov >= amount * 0.1)) {
     // Add movement
     currentAccount.movements.push(amount);
@@ -182,7 +182,7 @@ btnLoan.addEventListener('click', e => {
 
 btnTransfer.addEventListener('click', e => {
   e.preventDefault();
-  const amount = Number(inputTransferAmount.value);
+  const amount = +inputTransferAmount.value;
   const reciverAcc = accounts.find(
     acc => acc.userName === inputTransferTo.value
   );
@@ -206,7 +206,7 @@ btnClose.addEventListener('click', e => {
   e.preventDefault();
   if (
     inputCloseUsername.value === currentAccount.userName &&
-    Number(inputClosePin.value) === currentAccount.pin
+    +inputClosePin.value === currentAccount.pin
   ) {
     const index = accounts.findIndex(
       acc => acc.userName === currentAccount.userName
