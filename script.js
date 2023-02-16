@@ -141,9 +141,25 @@ const updateUI = curAcc => {
   // Display summary
   calcDisplaySummary(curAcc);
 };
-
-// Event handlers
+////////////////////////////////////////////////////
+//////////   Event handlers   //////////////////////
+////////////////////////////////////////////////////
 let currentAccount;
+
+// Fake login FIXME:
+currentAccount = account1;
+updateUI(account1);
+containerApp.style.opacity = 100;
+// Fake login FIXME:
+
+// Date stuff  FIXME:
+const now = new Date();
+const day = `${now.getDate().padStart(2, 0)}`;
+const month = `${(now.getMonth() + 1).padStart(2, 0)}`; // month index starts at 0.
+const year = now.getFullYear();
+const hour = now.getHours();
+const min = now.getMinutes();
+labelDate.textContent = `${day}/${month}/${year}, ${hour}:${min}`;
 
 btnLogin.addEventListener('click', e => {
   e.preventDefault();
