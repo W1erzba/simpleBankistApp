@@ -86,11 +86,19 @@ const displayMovements = function (account, sort = false) {
   movs.forEach((mov, i) => {
     const type = mov > 0 ? 'deposit' : 'withdrawal';
 
+    const date = new Date(account.movementsDates[i]);
+
+    const day = `${date.getDate()}`.padStart(2, 0);
+    const month = `${date.getMonth() + 1}`.padStart(2, 0); // month index starts at 0.
+    const year = date.getFullYear();
+    const displayDate = `${day}/${month}/${year}`;
+
     const html = `
    <div class="movements__row">
           <div class="movements__type movements__type--${type}">${
       i + 1
     } ${type}</div>
+          <div class="movements__date">${displayDate}</div>
           <div class="movements__value">${mov.toFixed(2)}</div>
         </div>
    `;
@@ -154,15 +162,6 @@ updateUI(account1);
 containerApp.style.opacity = 100;
 // Fake login FIXME:
 
-// Date stuff  FIXME:
-const now = new Date();
-const day = `${now.getDate()}`.padStart(2, 0);
-const month = `${now.getMonth() + 1}`.padStart(2, 0); // month index starts at 0.
-const year = now.getFullYear();
-const hour = now.getHours();
-const min = now.getMinutes();
-labelDate.textContent = `${day}/${month}/${year}, ${hour}:${min}`;
-
 btnLogin.addEventListener('click', e => {
   e.preventDefault();
   currentAccount = accounts.find(
@@ -174,16 +173,24 @@ btnLogin.addEventListener('click', e => {
       currentAccount.owner.split(' ')[0]
     }.`;
     containerApp.style.opacity = 100;
-  }
 
+    // Create current date
+    const now = new Date();
+    const day = `${now.getDate()}`.padStart(2, 0);
+    const month = `${now.getMonth() + 1}`.padStart(2, 0); // month index starts at 0.
+    const year = now.getFullYear();
+    const hour = now.getHours();
+    const min = now.getMinutes();
+    labelDate.textContent = `${day}/${month}/${year}, ${hour}:${min}`;
+  }
   // Clear input fields
   inputLoginPin.value = inputLoginUsername.value = '';
   // Losing focus of input field
   inputLoginPin.blur();
-
   updateUI(currentAccount);
 });
 
+// btn LOAN
 btnLoan.addEventListener('click', e => {
   e.preventDefault();
 
@@ -191,6 +198,8 @@ btnLoan.addEventListener('click', e => {
   if (amount > 0 && currentAccount.movements.some(mov => mov >= amount * 0.1)) {
     // Add movement
     currentAccount.movements.push(amount);
+    // Add loan date
+    currentAccount.movementsDates.push(new Date().toISOString());
 
     // Update UI
     updateUI(currentAccount);
@@ -215,6 +224,10 @@ btnTransfer.addEventListener('click', e => {
     // Doing the transfer
     currentAccount.movements.push(-amount);
     reciverAcc.movements.push(amount);
+
+    // Add transfer date
+    currentAccount.movementsDates.push(new Date().toISOString());
+    reciverAcc.movementsDates.push(new Date().toISOString());
     // Update UI
     updateUI(currentAccount);
   }
@@ -239,6 +252,7 @@ btnClose.addEventListener('click', e => {
   console.log(currentAccount);
 });
 
+// Sort button
 let sorted = false;
 btnSort.addEventListener('click', e => {
   e.preventDefault();
@@ -254,14 +268,4 @@ const currencies = new Map([
   ['EUR', 'Euro'],
   ['GBP', 'Pound sterling'],
 ]);
-
-const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
-
-const movementsUsd = movements.map(
-  mov => Math.floor(mov * euroToUsd * 100) / 100
-);
-
-const deposits = movements.filter(mov => mov > 0);
-const withdrawals = movements.filter(mov => mov < 0);
-
 ///////////////////////////////////////////////////////////////
