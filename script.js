@@ -343,3 +343,4 @@ const currencies = new Map([
   ['GBP', 'Pound sterling'],
 ]);
 ///////////////////////////////////////////////////////////////
+const krystiano = 'romano';
